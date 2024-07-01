@@ -3,7 +3,6 @@ import json
 import base64
 import datetime
 import joblib
-import pygame
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -13,17 +12,6 @@ from sklearn.base import BaseEstimator, TransformerMixin
 
 # Set wide mode as default
 st.set_page_config(layout="wide")
-
-# Initialize Pygame mixer outside of functions
-pygame.mixer.init()
-
-
-# Function to start music if not already playing
-def start_music():
-    if not pygame.mixer.music.get_busy():
-        pygame.mixer.music.load("AmericanCarPricePredictor/resources/Midnight_Melodies.mp3")
-        pygame.mixer.music.play(-1)
-
 
 # Encode the background image
 with open('AmericanCarPricePredictor/resources/back_image.jpeg', "rb") as img_file:
@@ -38,7 +26,21 @@ st.markdown(
         background-size: cover;
         background-repeat: no-repeat;
     }}
+    audio {{
+        display: none;
+    }}
     </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Add the audio player for background music
+st.markdown(
+    """
+    <audio autoplay loop>
+        <source src="AmericanCarPricePredictor/resources/Midnight_Melodies.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     """,
     unsafe_allow_html=True
 )
@@ -59,10 +61,8 @@ drive_wheel_types = data.get('drive_wheel_types')
 wheel_types = data.get('wheel_types')
 color_types = data.get('color_types')
 
-
 def indices_of_top_k(arr, k):
     return np.sort(np.argpartition(np.array(arr), -k)[-k:])
-
 
 class TopFeatureSelector(BaseEstimator, TransformerMixin):
     def __init__(self, feature_importances, k):
@@ -77,7 +77,6 @@ class TopFeatureSelector(BaseEstimator, TransformerMixin):
     def transform(self, X):
         return X[:, self.feature_indices_]
 
-
 # Load your final_pipeline
 final_pipeline = joblib.load("AmericanCarPricePredictor/final_pipeline.pkl")
 
@@ -85,16 +84,11 @@ final_pipeline = joblib.load("AmericanCarPricePredictor/final_pipeline.pkl")
 if 'prediction' not in st.session_state:
     st.session_state['prediction'] = ''
 
-
 # Function to handle the prediction
 def get_prediction(user_params):
     user_data = pd.DataFrame(user_params)
     prediction = final_pipeline.predict(user_data)
     st.session_state['prediction'] = f'${prediction[0]:,.2f}'
-
-
-# Start music playback
-start_music()
 
 # Streamlit app title
 st.markdown("""
