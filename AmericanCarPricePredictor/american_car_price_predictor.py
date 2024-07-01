@@ -26,21 +26,22 @@ st.markdown(
         background-size: cover;
         background-repeat: no-repeat;
     }}
-    audio {{
-        display: none;
-    }}
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# Add the audio player for background music
+# Add JavaScript for background audio
 st.markdown(
     """
-    <audio autoplay loop>
-        <source src="AmericanCarPricePredictor/resources/Midnight_Melodies.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <script>
+    function playAudio() {
+        var audio = new Audio('AmericanCarPricePredictor/resources/Midnight_Melodies.mp3');
+        audio.loop = true;
+        audio.play();
+    }
+    playAudio();
+    </script>
     """,
     unsafe_allow_html=True
 )
