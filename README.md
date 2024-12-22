@@ -1,2 +1,2 @@
 # StreamlitMLOPs
- DIY Projects deployed using MLOPs
+ DIY Projects deployed using Streamlit
